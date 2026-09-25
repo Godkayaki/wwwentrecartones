@@ -228,7 +228,7 @@
     <!-- Merch: productos de ejemplo hasta tener tienda (los primeros 4; el resto en la vista "Ver todo") -->
     <section id="merch" class="section--alt">
       <div class="wrap">
-        <div class="section__head"><h2>Merch (próximamente)</h2><a class="link-more" href="#/merch">Ver todo →</a></div>
+        <div class="section__head"><h2>Merch</h2><a class="link-more" href="#/merch">Ver todo →</a></div>
         <div class="grid grid--merch" id="merch-home"></div>
       </div>
     </section>
@@ -299,7 +299,9 @@
 
     // Configuración: API_KEY (YouTube Data API v3, opcional) y HERO_VIDEO (nombre del .mp4 junto a este HTML)
     const CHANNEL_ID = 'UC6DQ6Dd5oGRD2zXb11IyuMQ';
-    const API_KEY = '';
+    const API_KEY = ''; // Clave de YouTube Data API v3 (recomendada, ver notas abajo)
+    const RSS2JSON_KEY = ''; // Clave de rss2json.com — OJO: queda visible en el código publicado, evita ponerla aquí en un repo público
+    const RSS_PROXY = 'dry-base-3b86.daniplcm.workers.dev'; // URL de tu Worker de Cloudflare (recomendado): oculta la clave de rss2json
     const HERO_VIDEO = 'bm.mp4';
     const UPLOADS_NO_SHORTS = 'UULF' + CHANNEL_ID.slice(2);
     const HOME_LIMIT = 8;
@@ -311,10 +313,6 @@
       { image: 'static/ec-jap-mockup.png', name: 'Entre Cartones 🇯🇵 playmat', price: '30,00€', url: '#' },
       { image: 'static/glarb-mockup.png', name: 'Glarb playmat', price: '30,00€', url: '#' },
       { image: 'static/naus-mockup.png', name: 'Ad Nauseam playmat', price: '30,00€', url: '#' },
-      { image: 'static/trigger1-mockup.png', name: 'Trigger tokens v1', price: '5,00€', url: '#' },
-      { image: 'static/trigger2-mockup.png', name: 'Trigger tokens v2', price: '5,00€', url: '#' },
-      { image: 'static/treasure1-mockup.png', name: 'Treasure tokens', price: '5,00€', url: '#' },
-      { image: 'static/food1-mockup.png', name: 'Food tokens', price: '5,00€', url: 'https://www.youtube.com/' },
     ];
     const MERCH_HOME_LIMIT = 4;
 
@@ -328,7 +326,13 @@
 
     // Datos: descarga un feed RSS (vía rss2json), quita Shorts y normaliza a {id, title, date}
     const fetchFeed = async (feedUrl) => {
-      const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feedUrl));
+      // Si hay un Worker configurado, la clave de rss2json se queda oculta en el servidor;
+      // si no, se llama directamente a rss2json (con la clave visible, si se puso).
+      const proxyUrl = RSS_PROXY
+        ? RSS_PROXY + '?feed=' + encodeURIComponent(feedUrl)
+        : 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feedUrl)
+          + (RSS2JSON_KEY ? '&api_key=' + encodeURIComponent(RSS2JSON_KEY) : '');
+      const res = await fetch(proxyUrl);
       const data = await res.json();
       if (data.status !== 'ok' || !data.items) return [];
       return data.items
