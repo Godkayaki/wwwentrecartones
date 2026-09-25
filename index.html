@@ -299,9 +299,7 @@
 
     // Configuración: API_KEY (YouTube Data API v3, opcional) y HERO_VIDEO (nombre del .mp4 junto a este HTML)
     const CHANNEL_ID = 'UC6DQ6Dd5oGRD2zXb11IyuMQ';
-    const API_KEY = ''; // Clave de YouTube Data API v3 (recomendada, ver notas abajo)
-    const RSS2JSON_KEY = ''; // Clave de rss2json.com — OJO: queda visible en el código publicado, evita ponerla aquí en un repo público
-    const RSS_PROXY = 'https://dry-base-3b86.daniplcm.workers.dev'; // URL de tu Worker de Cloudflare (recomendado): oculta la clave de rss2json
+    const API_KEY = '__YOUTUBE_API_KEY__'; // GitHub Actions sustituye este marcador al desplegar; no pegues la clave aquí a mano
     const HERO_VIDEO = 'bm.mp4';
     const UPLOADS_NO_SHORTS = 'UULF' + CHANNEL_ID.slice(2);
     const HOME_LIMIT = 8;
@@ -324,42 +322,17 @@
       return node;
     };
 
-    // Datos: descarga un feed RSS (vía rss2json), quita Shorts y normaliza a {id, title, date}
-    const fetchFeed = async (feedUrl) => {
-      // Si hay un Worker configurado, la clave de rss2json se queda oculta en el servidor;
-      // si no, se llama directamente a rss2json (con la clave visible, si se puso).
-      const proxyUrl = RSS_PROXY
-        ? RSS_PROXY + '?feed=' + encodeURIComponent(feedUrl)
-        : 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feedUrl)
-          + (RSS2JSON_KEY ? '&api_key=' + encodeURIComponent(RSS2JSON_KEY) : '');
-      const res = await fetch(proxyUrl);
-      const data = await res.json();
-      if (data.status !== 'ok' || !data.items) return [];
-      return data.items
-        .filter((item) => !item.link.includes('/shorts/'))
-        .map((item) => ({
-          id: new URL(item.link).searchParams.get('v'),
-          title: item.title,
-          date: item.pubDate.replace(' ', 'T') + 'Z',
-        }));
-    };
-
-    // Datos: usa la API oficial si hay clave; si no, el feed RSS (con feed del canal como respaldo)
+    // Datos: pide los últimos vídeos con la API oficial de YouTube y descarta Shorts, privados y borrados
     const getVideos = async () => {
-      let videos;
-      if (API_KEY) {
-        const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet'
-          + `&maxResults=${VIDEOS_LIMIT}&playlistId=${UPLOADS_NO_SHORTS}&key=${API_KEY}`;
-        const data = await (await fetch(url)).json();
-        videos = (data.items || []).map(({ snippet }) => ({
-          id: snippet.resourceId.videoId, title: snippet.title, date: snippet.publishedAt,
-        }));
-      } else {
-        videos = await fetchFeed(`https://www.youtube.com/feeds/videos.xml?playlist_id=${UPLOADS_NO_SHORTS}`);
-        if (!videos.length) videos = await fetchFeed(`https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`);
-      }
+      const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails'
+        + `&maxResults=${VIDEOS_LIMIT}&playlistId=${UPLOADS_NO_SHORTS}&key=${API_KEY}`;
+      const data = await (await fetch(url)).json();
+      const videos = (data.items || []).map(({ snippet }) => ({
+        id: snippet.resourceId.videoId, title: snippet.title, date: snippet.publishedAt,
+      }));
       return videos.filter((v) => v.id && !['Private video', 'Deleted video'].includes(v.title));
     };
+
 
     // Vista: crea la miniatura 16:9 de un vídeo, con respaldo si no existe la versión HD
     const createThumbImage = (id, lazy = true) => {

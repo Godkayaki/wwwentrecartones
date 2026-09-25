@@ -1,0 +1,42 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main] # cambia esto si tu rama principal se llama de otra forma
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      # Sustituye el marcador __YOUTUBE_API_KEY__ por el secreto guardado en GitHub,
+      # solo en la copia que se despliega — el archivo del repositorio no se toca.
+      - name: Insertar la clave de la API de YouTube
+        run: |
+          sed -i "s|__YOUTUBE_API_KEY__|${{ secrets.YOUTUBE_API_KEY }}|g" Entre_Cartones.html
+
+      - name: Preparar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir el sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
