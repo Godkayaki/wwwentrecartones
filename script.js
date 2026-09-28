@@ -1,0 +1,148 @@
+'use strict';
+
+// Configuración: API_KEY (YouTube Data API v3, opcional) y HERO_VIDEO (nombre del .mp4 junto a index.html)
+const CHANNEL_ID = 'UC6DQ6Dd5oGRD2zXb11IyuMQ';
+const API_KEY = '__YOUTUBE_API_KEY__'; // GitHub Actions sustituye este marcador al desplegar; no pegues la clave aquí a mano
+const HERO_VIDEO = 'bm.mp4';
+const UPLOADS_NO_SHORTS = 'UULF' + CHANNEL_ID.slice(2);
+const HOME_LIMIT = 8;
+const VIDEOS_LIMIT = 20;
+
+// Datos: catálogo de merch (emoji, nombre, enlace opcional a producto) — se amplía aquí cuando haya tienda
+const MERCH = [
+  { image: 'static/blue-farm-mockup.png', name: 'Blue Farm playmat', price: '30,00€', url: '#' },
+  { image: 'static/ec-jap-mockup.png', name: 'Entre Cartones 🇯🇵 playmat', price: '30,00€', url: '#' },
+  { image: 'static/glarb-mockup.png', name: 'Glarb playmat', price: '30,00€', url: '#' },
+  { image: 'static/naus-mockup.png', name: 'Ad Nauseam playmat', price: '30,00€', url: '#' },
+];
+const MERCH_HOME_LIMIT = 4;
+
+// Utilidad: crea un elemento con clase y texto opcionales
+const el = (tag, className, text) => {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text) node.textContent = text;
+  return node;
+};
+
+// Datos: pide los últimos vídeos con la API oficial de YouTube y descarta Shorts, privados y borrados
+const getVideos = async () => {
+  const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails'
+    + `&maxResults=${VIDEOS_LIMIT}&playlistId=${UPLOADS_NO_SHORTS}&key=${API_KEY}`;
+  const data = await (await fetch(url)).json();
+  const videos = (data.items || []).map(({ snippet }) => ({
+    id: snippet.resourceId.videoId, title: snippet.title, date: snippet.publishedAt,
+  }));
+  return videos.filter((v) => v.id && !['Private video', 'Deleted video'].includes(v.title));
+};
+
+
+// Vista: crea la miniatura 16:9 de un vídeo, con respaldo si no existe la versión HD
+const createThumbImage = (id, lazy = true) => {
+  const img = el('img');
+  img.loading = lazy ? 'lazy' : 'eager';
+  img.alt = '';
+  const useFallback = () => {
+    img.onerror = img.onload = null;
+    img.src = `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
+  };
+  img.onerror = useFallback;
+  img.onload = () => { if (img.naturalWidth <= 120) useFallback(); };
+  img.src = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+  return img;
+};
+
+// Vista: crea una tarjeta con miniatura 16:9 que enlaza al vídeo en YouTube
+const createCard = ({ id, title, date }) => {
+  const link = el('a', 'card');
+  link.href = `https://www.youtube.com/watch?v=${id}`;
+  link.target = '_blank';
+  link.rel = 'noopener';
+
+  const thumb = el('div', 'thumb thumb--img');
+  thumb.append(createThumbImage(id));
+
+  const body = el('div', 'card__body');
+  body.append(el('h3', '', title));
+  const published = new Date(date);
+  if (!isNaN(published)) {
+    body.append(el('small', '', published.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })));
+  }
+  link.append(thumb, body);
+  return link;
+};
+
+// Vista: muestra la miniatura del último vídeo en el hero, enlazada a YouTube
+const renderHero = ({ id, title }) => {
+  const link = document.getElementById('hero-video');
+  link.setAttribute('aria-label', `Ver en YouTube: ${title}`);
+  link.replaceChildren(createThumbImage(id, false));
+};
+
+// Vista: sustituye el contenido de una rejilla por las tarjetas de los vídeos
+const renderList = (box, videos) => box.replaceChildren(...videos.map(createCard));
+
+// Vista: crea una tarjeta de producto de merch (foto en static/, nombre y precio)
+const createMerchCard = ({ image, name, price, url }) => {
+  const link = el('a', 'card');
+  link.href = url;
+  const thumb = el('div', 'thumb');
+  const img = el('img');
+  img.src = image;
+  img.alt = name;
+  img.loading = 'lazy';
+  thumb.append(img);
+  const body = el('div', 'card__body');
+  body.append(el('h3', '', name), el('small', 'price', price));
+  link.append(thumb, body);
+  return link;
+};
+const renderMerch = (box, items) => box.replaceChildren(...items.map(createMerchCard));
+
+// Fondo del hero: vídeo local en bucle y mudo (reinicia unos ms antes del final para evitar el parón), salvo reducir movimiento
+if (HERO_VIDEO && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const bg = el('video', 'hero__bgvideo');
+  bg.src = HERO_VIDEO;
+  bg.preload = 'auto';
+  bg.muted = bg.loop = bg.autoplay = bg.playsInline = true;
+  bg.setAttribute('muted', '');
+  bg.addEventListener('error', () => bg.remove());
+  const restartNearEnd = () => {
+    if (bg.duration && bg.currentTime >= bg.duration - 0.12) bg.currentTime = 0;
+    requestAnimationFrame(restartNearEnd);
+  };
+  bg.addEventListener('playing', () => requestAnimationFrame(restartNearEnd), { once: true });
+  document.getElementById('hero-bg').append(bg);
+  bg.play().catch(() => {});
+}
+
+// Navegación: muestra inicio, vídeos, merch o About según el hash de la URL
+const home = document.getElementById('top');
+const PAGES = {
+  '#/videos': { el: document.getElementById('vp'), title: 'Vídeos' },
+  '#/merch': { el: document.getElementById('mp'), title: 'Merch' },
+  '#/about': { el: document.getElementById('ap'), title: 'About' },
+};
+const route = () => {
+  const page = PAGES[location.hash];
+  home.hidden = !!page;
+  Object.values(PAGES).forEach((p) => { p.el.hidden = p !== page; });
+  document.title = page ? `${page.title} · Entre Cartones` : 'Entre Cartones';
+  const target = !page && document.getElementById(location.hash.slice(1));
+  if (target) target.scrollIntoView(); else scrollTo(0, 0);
+};
+
+// Arranque: pinta el merch, activa la navegación y carga los vídeos
+renderMerch(document.getElementById('merch-home'), MERCH.slice(0, MERCH_HOME_LIMIT));
+renderMerch(document.getElementById('merch-all'), MERCH);
+const homeGrid = document.getElementById('vids');
+const videosGrid = document.getElementById('vids2');
+videosGrid.innerHTML = homeGrid.innerHTML;
+window.addEventListener('hashchange', route);
+route();
+getVideos().then((videos) => {
+  if (!videos.length) return;
+  renderHero(videos[0]);
+  renderList(homeGrid, videos.slice(0, HOME_LIMIT));
+  renderList(videosGrid, videos.slice(0, VIDEOS_LIMIT));
+}).catch(() => {});
