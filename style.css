@@ -133,17 +133,20 @@ h2 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -.025em; }
 .lt__socials .icon-link { width: 48px; height: 48px; color: var(--ink); background: var(--card); border: 1px solid var(--line); }
 .lt__socials .icon-link:hover { color: var(--acct); border-color: var(--acc); }
 .lt__socials .icon { width: 24px; height: 24px; }
-.lt__heading { margin: 0 0 14px; font-size: 15px; font-weight: 700; letter-spacing: 0; }
 .lt__list { display: grid; gap: 14px; }
-.lt__link, .lt__card { display: block; padding: 16px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); font-weight: 600; transition: .2s; }
-.lt__link:hover, .lt__card:hover { transform: translateY(-2px); border-color: var(--acc); }
-.lt__link--follow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.lt__pill { padding: 6px 16px; border-radius: 999px; font-size: 14px; color: #fff; background: linear-gradient(120deg, var(--acc2), var(--pink)); }
-.lt__card { text-align: left; }
-.lt__card small { display: block; margin-top: 6px; font-size: 14px; font-weight: 400; color: var(--mute); white-space: pre-line; overflow-wrap: anywhere; }
-.lt__card--discord { display: flex; align-items: center; gap: 16px; color: #fff; border-color: transparent; background: linear-gradient(120deg, var(--acc2), var(--pink)); }
-.lt__card--discord small { margin-top: 2px; color: rgba(255, 255, 255, .85); }
-.lt__card--discord .icon { flex: none; width: 36px; height: 36px; }
+.lt__sep { margin: 28px 0; border: 0; border-top: 1px solid var(--line); }
+
+/* About: enlaces (icono + texto, siempre centrados) */
+.lt__link { display: flex; justify-content: center; align-items: center; gap: 12px; padding: 16px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); font-weight: 600; transition: .2s; }
+.lt__link:hover { transform: translateY(-2px); border-color: var(--acc); }
+.lt__link .icon { flex: none; width: 28px; height: 28px; }
+.lt__link small { display: block; margin-top: 2px; font-size: 14px; font-weight: 400; }
+.lt__link--discord { color: #fff; border-color: transparent; background: linear-gradient(120deg, var(--acc2), var(--pink)); }
+.lt__link--discord small { color: rgba(255, 255, 255, .85); }
+.lt__link--discord .icon { width: 36px; height: 36px; }
+.lt__photo { position: relative; display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 50%; font-size: 15px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--acc2), var(--pink)); }
+.lt__photo::before { content: attr(data-initial); }
+.lt__photo img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
 /* Pie de página: redes centradas y copyright */
 footer { padding: 40px 0; border-top: 1px solid var(--line); font-size: 14px; text-align: center; color: var(--mute); }

@@ -132,6 +132,12 @@ const route = () => {
   if (target) target.scrollIntoView(); else scrollTo(0, 0);
 };
 
+// About: si falta la foto de perfil en static/, se queda el avatar con la inicial
+document.querySelectorAll('.lt__photo img').forEach((img) => {
+  const hide = () => img.remove();
+  if (img.complete && img.naturalWidth === 0) hide(); else img.addEventListener('error', hide);
+});
+
 // Arranque: pinta el merch, activa la navegación y carga los vídeos
 renderMerch(document.getElementById('merch-home'), MERCH.slice(0, MERCH_HOME_LIMIT));
 renderMerch(document.getElementById('merch-all'), MERCH);
