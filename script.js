@@ -8,13 +8,8 @@ const UPLOADS_NO_SHORTS = 'UULF' + CHANNEL_ID.slice(2);
 const HOME_LIMIT = 8;
 const VIDEOS_LIMIT = 20;
 
-// Datos: catálogo de merch (emoji, nombre, enlace opcional a producto) — se amplía aquí cuando haya tienda
-const MERCH = [
-  { image: 'static/blue-farm-mockup.png', name: 'Blue Farm playmat', price: '30,00€', url: '#' },
-  { image: 'static/ec-jap-mockup.png', name: 'Entre Cartones 🇯🇵 playmat', price: '30,00€', url: '#' },
-  { image: 'static/glarb-mockup.png', name: 'Glarb playmat', price: '30,00€', url: '#' },
-  { image: 'static/naus-mockup.png', name: 'Ad Nauseam playmat', price: '30,00€', url: '#' },
-];
+// Datos: catálogo de merch, en static/merch.json — edítalo ahí, sin tocar este script
+const MERCH_FILE = 'static/merch.json';
 const MERCH_HOME_LIMIT = 4;
 
 // Utilidad: crea un elemento con clase y texto opcionales
@@ -104,6 +99,7 @@ if (HERO_VIDEO && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const bg = el('video', 'hero__bgvideo');
   bg.src = HERO_VIDEO;
   bg.preload = 'auto';
+  bg.fetchPriority = 'high';
   bg.muted = bg.loop = bg.autoplay = bg.playsInline = true;
   bg.setAttribute('muted', '');
   bg.addEventListener('error', () => bg.remove());
@@ -138,9 +134,14 @@ document.querySelectorAll('.lt__photo img').forEach((img) => {
   if (img.complete && img.naturalWidth === 0) hide(); else img.addEventListener('error', hide);
 });
 
+// Datos: lee el catálogo de merch desde static/merch.json (si falla, las tarjetas se quedan vacías)
+const getMerch = () => fetch(MERCH_FILE).then((res) => res.json()).catch(() => []);
+
 // Arranque: pinta el merch, activa la navegación y carga los vídeos
-renderMerch(document.getElementById('merch-home'), MERCH.slice(0, MERCH_HOME_LIMIT));
-renderMerch(document.getElementById('merch-all'), MERCH);
+getMerch().then((items) => {
+  renderMerch(document.getElementById('merch-home'), items.slice(0, MERCH_HOME_LIMIT));
+  renderMerch(document.getElementById('merch-all'), items);
+}).catch(() => {});
 const homeGrid = document.getElementById('vids');
 const videosGrid = document.getElementById('vids2');
 videosGrid.innerHTML = homeGrid.innerHTML;

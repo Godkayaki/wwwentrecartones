@@ -8,6 +8,8 @@
   <link rel="icon" type="image/png" href="static/favicon.png">
 
   <link rel="stylesheet" href="style.css">
+  <!-- Adelanta la descarga del vídeo de cabecera antes de que el script lo cree (el nombre debe coincidir con HERO_VIDEO en script.js) -->
+  <link rel="preload" as="video" href="bm.mp4" type="video/mp4" fetchpriority="high">
 </head>
 
 <body>
@@ -155,6 +157,10 @@
           <svg class="icon" aria-hidden="true"><use href="#i-discord"/></svg>
           <span><strong>Entre Cartones</strong><small>Discord Server • Free to join</small></span>
         </a>
+        <span class="lt__link lt__link--patreon lt__link--disabled" role="img" aria-label="Patreon (próximamente)">
+          <svg class="icon" aria-hidden="true"><use href="#i-patreon"/></svg>
+          <span><strong>Patreon</strong><small>Próximamente</small></span>
+        </span>
       </div>
 
       <hr class="lt__sep">

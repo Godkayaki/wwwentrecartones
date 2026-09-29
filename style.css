@@ -74,9 +74,6 @@ nav ul a:hover { color: var(--acct); }
 .hero__caption { margin: 0; text-align: center; font-size: 17px; font-weight: 600; }
 .hero__caption strong { color: var(--acc2); }
 .hero__video img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.hero__video::after { content: "▶"; position: absolute; top: 50%; left: 50%; display: grid; place-items: center;
-                      width: 64px; height: 64px; transform: translate(-50%, -50%); border-radius: 50%;
-                      font-size: 26px; color: #fff; background: rgba(0, 0, 0, .55); }
 .hero h1 { max-width: 14ch; margin: 12px 0 18px; font-size: clamp(38px, 7vw, 72px); line-height: 1.02; letter-spacing: -.035em; }
 .hero h1 em { font-style: normal; color: transparent; background: linear-gradient(120deg, var(--acct), var(--acc2));
               -webkit-background-clip: text; background-clip: text;
@@ -144,6 +141,10 @@ h2 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -.025em; }
 .lt__link--discord { color: #fff; border-color: transparent; background: linear-gradient(120deg, var(--acc2), var(--pink)); }
 .lt__link--discord small { color: rgba(255, 255, 255, .85); }
 .lt__link--discord .icon { width: 36px; height: 36px; }
+.lt__link--patreon { color: #111; border-color: transparent; background: var(--acc); }
+.lt__link--patreon small { color: rgba(0, 0, 0, .6); }
+.lt__link--patreon .icon { width: 36px; height: 36px; }
+.lt__link--disabled { cursor: default; pointer-events: none; }
 .lt__photo { position: relative; display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 50%; font-size: 15px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--acc2), var(--pink)); }
 .lt__photo::before { content: attr(data-initial); }
 .lt__photo img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
