@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Entre Cartones</title>
+<!--
+  Truco estándar de rutas limpias en GitHub Pages (SPA sin servidor):
+  GitHub sirve este archivo cuando alguien visita /about, /videos o /merch
+  directamente (o recarga la página estando ahí), porque no existen como
+  carpetas reales. En vez de mostrar un 404, redirige a index.html
+  guardando la ruta pedida en la propia URL para que index.html la
+  recupere y la restaure. Basado en https://github.com/rafgraph/spa-github-pages
+-->
+<script>
+  var path = location.pathname + location.search;
+  location.replace(location.origin + '/?p=' + encodeURIComponent(path) + location.hash);
+</script>
+</head>
+<body></body>
+</html>

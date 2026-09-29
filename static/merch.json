@@ -1,25 +1,43 @@
 [
   {
-    "image": "static/blue-farm-mockup.png",
+    "image": "static/mockups/bluefarm-mockup.png",
     "name": "Blue Farm playmat",
     "price": "30,00€",
     "url": "#"
   },
   {
-    "image": "static/ec-jap-mockup.png",
+    "image": "static/mockups/ecpurple-mockup.png",
     "name": "Entre Cartones 🇯🇵 playmat",
     "price": "30,00€",
     "url": "#"
   },
   {
-    "image": "static/glarb-mockup.png",
+    "image": "static/mockups/glarb-mockup.png",
     "name": "Glarb playmat",
     "price": "30,00€",
     "url": "#"
   },
   {
-    "image": "static/naus-mockup.png",
+    "image": "static/mockups/naus-mockup.png",
     "name": "Ad Nauseam playmat",
+    "price": "30,00€",
+    "url": "#"
+  },
+  {
+    "image": "static/mockups/ecjap-mockup.png",
+    "name": "Entre Cartones 🇯🇵 playmat",
+    "price": "30,00€",
+    "url": "#"
+  },
+  {
+    "image": "static/mockups/skrull-mockup.png",
+    "name": "Entre Cartones 🇯🇵 playmat",
+    "price": "30,00€",
+    "url": "#"
+  },
+  {
+    "image": "static/mockups/sloplove-mockup.png",
+    "name": "Entre Cartones 🇯🇵 playmat",
     "price": "30,00€",
     "url": "#"
   }
