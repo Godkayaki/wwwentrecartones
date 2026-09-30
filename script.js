@@ -112,21 +112,34 @@ if (HERO_VIDEO && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   bg.play().catch(() => {});
 }
 
-// Navegación: muestra inicio, vídeos, merch o About según el hash de la URL
+// Navegación: muestra inicio, vídeos, merch o About según la ruta de la URL (rutas limpias, sin #)
 const home = document.getElementById('top');
 const PAGES = {
-  '#/videos': { el: document.getElementById('vp'), title: 'Vídeos' },
-  '#/merch': { el: document.getElementById('mp'), title: 'Merch' },
-  '#/about': { el: document.getElementById('ap'), title: 'About' },
+  '/videos': { el: document.getElementById('vp'), title: 'Vídeos' },
+  '/merch': { el: document.getElementById('mp'), title: 'Merch' },
+  '/about': { el: document.getElementById('ap'), title: 'About' },
 };
 const route = () => {
-  const page = PAGES[location.hash];
+  const page = PAGES[location.pathname];
   home.hidden = !!page;
   Object.values(PAGES).forEach((p) => { p.el.hidden = p !== page; });
   document.title = page ? `${page.title} · Entre Cartones` : 'Entre Cartones';
   const target = !page && document.getElementById(location.hash.slice(1));
   if (target) target.scrollIntoView(); else scrollTo(0, 0);
 };
+
+// Navegación: intercepta los clics en enlaces internos (/, /videos, /merch, /about)
+// para cambiar de vista sin recargar la página, usando el historial del navegador
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[href]');
+  if (!link || link.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const url = new URL(link.href, location.href);
+  if (url.origin !== location.origin || !(url.pathname === '/' || url.pathname in PAGES)) return;
+  event.preventDefault();
+  if (url.pathname !== location.pathname) history.pushState(null, '', url.pathname + url.hash);
+  route();
+});
+window.addEventListener('popstate', route);
 
 // About: si falta la foto de perfil en static/, se queda el avatar con la inicial
 document.querySelectorAll('.lt__photo img').forEach((img) => {
@@ -145,7 +158,6 @@ getMerch().then((items) => {
 const homeGrid = document.getElementById('vids');
 const videosGrid = document.getElementById('vids2');
 videosGrid.innerHTML = homeGrid.innerHTML;
-window.addEventListener('hashchange', route);
 route();
 getVideos().then((videos) => {
   if (!videos.length) return;

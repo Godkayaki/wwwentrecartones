@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Truco de rutas limpias en GitHub Pages (parte 2): si 404.html redirigió aquí desde
+       /about, /videos o /merch, restaura esa ruta en la barra de direcciones ANTES de que
+       cargue el resto de la página, para que se vea la ruta real y no /?p=/about -->
+  <script>
+    (function () {
+      var p = new URLSearchParams(location.search).get('p');
+      if (p) history.replaceState(null, '', p + location.hash);
+    })();
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Entre Cartones</title>
@@ -27,10 +36,10 @@
   <header>
     <div class="wrap">
       <nav aria-label="Principal">
-        <a class="brand" href="#top"><span class="logo-img" aria-hidden="true"></span><span>Entre <em>Cartones</em></span></a>
+        <a class="brand" href="/"><span class="logo-img" aria-hidden="true"></span><span>Entre <em>Cartones</em></span></a>
         <ul>
-          <li><a href="#/videos">Vídeos</a></li>
-          <li><a href="#merch">Merch</a></li>
+          <li><a href="/videos">Vídeos</a></li>
+          <li><a href="/merch">Merch</a></li>
         </ul>
         <div class="nav__end">
           <div class="socials">
@@ -72,7 +81,7 @@
     <!-- Últimos vídeos: marcadores que el script sustituye por los reales -->
     <section id="videos">
       <div class="wrap">
-        <div class="section__head"><h2>Últimos vídeos</h2><a class="link-more" href="#/videos">Ver todos →</a></div>
+        <div class="section__head"><h2>Últimos vídeos</h2><a class="link-more" href="/videos">Ver todos →</a></div>
         <div class="grid grid--videos" id="vids">
           <a class="card" href="https://www.youtube.com/@cartonesentre/videos"><div class="thumb">▶</div><div class="card__body"><div class="tag">Partidas</div><h3>Título del último vídeo</h3><small>Fecha</small></div></a>
           <a class="card" href="https://www.youtube.com/@cartonesentre/videos"><div class="thumb">▶</div><div class="card__body"><div class="tag">Partidas</div><h3>Título del vídeo 2</h3><small>Fecha</small></div></a>
@@ -85,7 +94,7 @@
     <!-- Merch: productos de ejemplo hasta tener tienda (los primeros 4; el resto en la vista "Ver todo") -->
     <section id="merch" class="section--alt">
       <div class="wrap">
-        <div class="section__head"><h2>Merch</h2><a class="link-more" href="#/merch">Ver todo →</a></div>
+        <div class="section__head"><h2>Merch</h2><a class="link-more" href="/merch">Ver todo →</a></div>
         <div class="grid grid--merch" id="merch-home"></div>
       </div>
     </section>
@@ -117,7 +126,7 @@
   <main id="mp" hidden>
     <section>
       <div class="wrap">
-        <div class="section__head"><h2>Merch</h2><a class="link-more" href="#/">← Volver al inicio</a></div>
+        <div class="section__head"><h2>Merch</h2><a class="link-more" href="/">← Volver al inicio</a></div>
         <div class="grid grid--merch" id="merch-all"></div>
       </div>
     </section>
@@ -127,7 +136,7 @@
   <main id="vp" hidden>
     <section>
       <div class="wrap">
-        <div class="section__head"><h2>Vídeos</h2><a class="link-more" href="#/">← Volver al inicio</a></div>
+        <div class="section__head"><h2>Vídeos</h2><a class="link-more" href="/">← Volver al inicio</a></div>
         <div class="grid grid--videos" id="vids2"></div>
         <div class="center">
           <a class="btn btn--primary" href="https://www.youtube.com/@cartonesentre/videos" target="_blank" rel="noopener">Ver todos los vídeos en YouTube</a>
@@ -194,7 +203,7 @@
         <a class="icon-link" href="https://x.com/entrecartones" target="_blank" rel="noopener" aria-label="X" title="X"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></a>
         <a class="icon-link" href="https://www.youtube.com/@cartonesentre" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube"><svg class="icon" aria-hidden="true"><use href="#i-yt"/></svg></a>
       </div>
-      <p><a class="footer__about" href="#/about">About</a><span class="footer__sep" aria-hidden="true">|</span><b>© 2026 Entre Cartones.</b> Todos los derechos reservados. ─ <b>Magic: The Gathering</b> es marca registrada de Wizards of the Coast.</p>
+      <p><a class="footer__about" href="/about">About</a><span class="footer__sep" aria-hidden="true">|</span><b>© 2026 Entre Cartones.</b> Todos los derechos reservados. ─ <b>Magic: The Gathering</b> es marca registrada de Wizards of the Coast.</p>
     </div>
   </footer>
 
