@@ -55,15 +55,20 @@
   <!-- Adelanta la descarga del vídeo de cabecera antes de que el script lo cree (el nombre debe coincidir con HERO_VIDEO en script.js) -->
   <link rel="preload" as="video" href="bm.mp4" type="video/mp4" fetchpriority="high">
 
-  <!-- Google Analytics 4: sustituye GA_MEASUREMENT_ID por tu ID real (G-XXXXXXXXXX), no es secreto.
-       send_page_view queda en false porque script.js envía la vista de cada ruta a mano (ver route() abajo),
-       ya que al navegar entre /, /videos, /merch y /about la página no se recarga. -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+  <!-- Google Analytics 4: el ID de medición vive en ga-config.js — cámbialo solo ahí, no aquí.
+       La primera vista la envía este bloque solo; script.js manda las siguientes al navegar sin recargar. -->
+  <script src="ga-config.js"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'GA_MEASUREMENT_ID');
+    if (window.GA_MEASUREMENT_ID) {
+      var gaLoader = document.createElement('script');
+      gaLoader.async = true;
+      gaLoader.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
+      document.head.appendChild(gaLoader);
+      gtag('js', new Date());
+      gtag('config', window.GA_MEASUREMENT_ID);
+    }
   </script>
 </head>
 
