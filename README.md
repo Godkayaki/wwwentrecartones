@@ -1,4 +1,8 @@
-<p align="center"> <img src="static/logo.png" width="120"> </p>
+<p align="center"> 
+    <a href="https://www.youtube.com/@cartonesentre" target="_blank"> 
+        <img src="static/logo.png" width="120"> 
+    </a> 
+</p>
 
 # Entre Cartones
 
