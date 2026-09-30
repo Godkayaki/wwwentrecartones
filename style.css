@@ -85,7 +85,16 @@ nav ul a:hover { color: var(--acct); }
 /* Secciones: espaciado, cabecera de sección y variante con fondo */
 section { padding: 64px 0; }
 .section--alt { background: var(--bg2); }
-.section__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 24px; }
+.section__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 20px; margin-bottom: 24px; }
+.section__head-left { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+
+/* Pestañas de filtro (página Vídeos): "Todos", "Partidas", "Podcasts", "Shorts" */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab { padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+       color: var(--mute); font-size: 14px; font-weight: 600; cursor: pointer; transition: .2s; }
+.tab:hover { color: var(--ink); border-color: var(--acc); }
+.tab.is-active { color: #fff; border-color: transparent; background: linear-gradient(120deg, var(--acc2), var(--pink)); }
+.videos__empty { color: var(--mute); }
 h2 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -.025em; }
 .link-more { font-size: 15px; font-weight: 600; color: var(--acct); }
 .center { margin-top: 32px; text-align: center; }

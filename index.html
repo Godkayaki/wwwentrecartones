@@ -55,13 +55,15 @@
   <!-- Adelanta la descarga del vídeo de cabecera antes de que el script lo cree (el nombre debe coincidir con HERO_VIDEO en script.js) -->
   <link rel="preload" as="video" href="bm.mp4" type="video/mp4" fetchpriority="high">
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6MB2V1QDYJ"></script>
+  <!-- Google Analytics 4: sustituye GA_MEASUREMENT_ID por tu ID real (G-XXXXXXXXXX), no es secreto.
+       send_page_view queda en false porque script.js envía la vista de cada ruta a mano (ver route() abajo),
+       ya que al navegar entre /, /videos, /merch y /about la página no se recarga. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', 'G-6MB2V1QDYJ');
+    gtag('config', 'GA_MEASUREMENT_ID', { send_page_view: false });
   </script>
 </head>
 
@@ -180,8 +182,20 @@
   <main id="vp" hidden>
     <section>
       <div class="wrap">
-        <div class="section__head"><h2>Vídeos</h2><a class="link-more" href="/">← Volver al inicio</a></div>
+        <div class="section__head">
+          <div class="section__head-left">
+            <h2>Vídeos</h2>
+            <div class="tabs" id="video-tabs" role="tablist" aria-label="Filtrar vídeos">
+              <button class="tab is-active" type="button" data-filter="all" role="tab" aria-selected="true">Todos</button>
+              <button class="tab" type="button" data-filter="partidas" role="tab" aria-selected="false">Partidas</button>
+              <button class="tab" type="button" data-filter="podcasts" role="tab" aria-selected="false">Podcasts</button>
+              <button class="tab" type="button" data-filter="shorts" role="tab" aria-selected="false">Shorts</button>
+            </div>
+          </div>
+          <a class="link-more" href="/">← Volver al inicio</a>
+        </div>
         <div class="grid grid--videos" id="vids2"></div>
+        <p class="videos__empty" id="videos-empty" hidden>No se han podido cargar estos vídeos. Vuelve a intentarlo más tarde.</p>
         <div class="center">
           <a class="btn btn--primary" href="https://www.youtube.com/@cartonesentre/videos" target="_blank" rel="noopener">Ver todos los vídeos en YouTube</a>
         </div>

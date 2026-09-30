@@ -20,16 +20,27 @@ const el = (tag, className, text) => {
   return node;
 };
 
-// Datos: pide los últimos vídeos con la API oficial de YouTube y descarta Shorts, privados y borrados
-const getVideos = async () => {
+// Datos: playlists de YouTube para cada filtro de la página de Vídeos.
+// UUSH es un prefijo no oficial pero estable y muy usado para "solo Shorts" del canal (como ya usamos UULF para "sin Shorts").
+const PLAYLISTS = {
+  partidas: 'PLUodKu7vB-DV5iPPpOj4YbAYwpq_eQcSM',
+  podcasts: 'PLUodKu7vB-DXGjwLq9jPnfhNrh_D0NJ0-',
+  shorts: 'UUSH' + CHANNEL_ID.slice(2),
+};
+
+// Datos: pide vídeos de cualquier playlist con la API oficial de YouTube y descarta privados y borrados
+const getPlaylistVideos = async (playlistId, limit = VIDEOS_LIMIT) => {
   const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails'
-    + `&maxResults=${VIDEOS_LIMIT}&playlistId=${UPLOADS_NO_SHORTS}&key=${API_KEY}`;
+    + `&maxResults=${limit}&playlistId=${playlistId}&key=${API_KEY}`;
   const data = await (await fetch(url)).json();
   const videos = (data.items || []).map(({ snippet }) => ({
     id: snippet.resourceId.videoId, title: snippet.title, date: snippet.publishedAt,
   }));
   return videos.filter((v) => v.id && !['Private video', 'Deleted video'].includes(v.title));
 };
+
+// Datos: pide los últimos vídeos con la API oficial de YouTube y descarta Shorts, privados y borrados
+const getVideos = () => getPlaylistVideos(UPLOADS_NO_SHORTS, VIDEOS_LIMIT);
 
 
 // Vista: crea la miniatura 16:9 de un vídeo, con respaldo si no existe la versión HD
@@ -121,7 +132,7 @@ const PAGES = {
 };
 const DEFAULT_TITLE = 'Entre Cartones';
 const DEFAULT_DESCRIPTION = 'Contenido semanal de Magic: The Gathering.';
-const route = () => {
+const route = (isInitial = false) => {
   const page = PAGES[location.pathname];
   home.hidden = !!page;
   Object.values(PAGES).forEach((p) => { p.el.hidden = p !== page; });
@@ -138,8 +149,9 @@ const route = () => {
   document.getElementById('meta-og-url').content = canonical;
   document.getElementById('meta-canonical').href = canonical;
 
-  // Analítica: registra esta vista en Google Analytics (si el script cargó; los bloqueadores de anuncios lo impiden a veces)
-  if (typeof gtag === 'function') {
+  // Analítica: la primera vista ya la envía el bloque de gtag.js del <head>; aquí solo mandamos
+  // las siguientes, porque al navegar entre secciones la página no se recarga.
+  if (!isInitial && typeof gtag === 'function') {
     gtag('event', 'page_view', { page_path: location.pathname, page_title: title, page_location: canonical });
   }
 
@@ -174,13 +186,44 @@ getMerch().then((items) => {
   renderMerch(document.getElementById('merch-home'), items.slice(0, MERCH_HOME_LIMIT));
   renderMerch(document.getElementById('merch-all'), items);
 }).catch(() => {});
+// Vídeos: caché de cada pestaña ya cargada, para no volver a pedirla a la API al cambiar de filtro
+const videoCache = { all: null, partidas: null, podcasts: null, shorts: null };
+
 const homeGrid = document.getElementById('vids');
 const videosGrid = document.getElementById('vids2');
 videosGrid.innerHTML = homeGrid.innerHTML;
-route();
+route(true);
 getVideos().then((videos) => {
   if (!videos.length) return;
+  videoCache.all = videos.slice(0, VIDEOS_LIMIT);
   renderHero(videos[0]);
   renderList(homeGrid, videos.slice(0, HOME_LIMIT));
-  renderList(videosGrid, videos.slice(0, VIDEOS_LIMIT));
+  renderList(videosGrid, videoCache.all);
 }).catch(() => {});
+
+// Vídeos: pestañas de filtro en la página /videos (Todos, Partidas, Podcasts, Shorts)
+const videoTabs = document.getElementById('video-tabs');
+const videosEmpty = document.getElementById('videos-empty');
+const loadFilter = async (filter) => {
+  videosEmpty.hidden = true;
+  if (videoCache[filter]) { renderList(videosGrid, videoCache[filter]); return; }
+  if (filter === 'all') return; // "Todos" se rellena solo al terminar de cargar arriba
+  videosGrid.replaceChildren();
+  try {
+    const videos = await getPlaylistVideos(PLAYLISTS[filter], VIDEOS_LIMIT);
+    videoCache[filter] = videos;
+    if (!videos.length) { videosEmpty.hidden = false; return; }
+    renderList(videosGrid, videos);
+  } catch {
+    videosEmpty.hidden = false;
+  }
+};
+videoTabs.addEventListener('click', (event) => {
+  const btn = event.target.closest('.tab');
+  if (!btn || btn.classList.contains('is-active')) return;
+  videoTabs.querySelectorAll('.tab').forEach((t) => {
+    t.classList.toggle('is-active', t === btn);
+    t.setAttribute('aria-selected', t === btn ? 'true' : 'false');
+  });
+  loadFilter(btn.dataset.filter);
+});
