@@ -138,6 +138,11 @@ const route = () => {
   document.getElementById('meta-og-url').content = canonical;
   document.getElementById('meta-canonical').href = canonical;
 
+  // Analítica: registra esta vista en Google Analytics (si el script cargó; los bloqueadores de anuncios lo impiden a veces)
+  if (typeof gtag === 'function') {
+    gtag('event', 'page_view', { page_path: location.pathname, page_title: title, page_location: canonical });
+  }
+
   const target = !page && document.getElementById(location.hash.slice(1));
   if (target) target.scrollIntoView(); else scrollTo(0, 0);
 };
