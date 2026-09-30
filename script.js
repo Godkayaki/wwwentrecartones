@@ -115,15 +115,29 @@ if (HERO_VIDEO && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
 // Navegación: muestra inicio, vídeos, merch o About según la ruta de la URL (rutas limpias, sin #)
 const home = document.getElementById('top');
 const PAGES = {
-  '/videos': { el: document.getElementById('vp'), title: 'Vídeos' },
-  '/merch': { el: document.getElementById('mp'), title: 'Merch' },
-  '/about': { el: document.getElementById('ap'), title: 'About' },
+  '/videos': { el: document.getElementById('vp'), title: 'Vídeos', description: 'Todos los vídeos de Entre Cartones: partidas, mazos y contenido semanal de Magic: The Gathering.' },
+  '/merch': { el: document.getElementById('mp'), title: 'Merch', description: 'Playmats y merchandising oficial de Entre Cartones.' },
+  '/about': { el: document.getElementById('ap'), title: 'About', description: 'Todos los enlaces de Entre Cartones: YouTube, Discord, Instagram, TikTok, X y Moxfield.' },
 };
+const DEFAULT_TITLE = 'Entre Cartones';
+const DEFAULT_DESCRIPTION = 'Contenido semanal de Magic: The Gathering.';
 const route = () => {
   const page = PAGES[location.pathname];
   home.hidden = !!page;
   Object.values(PAGES).forEach((p) => { p.el.hidden = p !== page; });
-  document.title = page ? `${page.title} · Entre Cartones` : 'Entre Cartones';
+
+  // SEO: título, descripción y URL canónica de la vista actual (mismo documento, sin recargar)
+  const title = page ? `${page.title} · Entre Cartones` : DEFAULT_TITLE;
+  const description = page ? page.description : DEFAULT_DESCRIPTION;
+  const canonical = 'https://entrecartones.com' + (page ? location.pathname : '/');
+  document.title = title;
+  document.getElementById('meta-title').textContent = title;
+  document.getElementById('meta-description').content = description;
+  document.getElementById('meta-og-title').content = title;
+  document.getElementById('meta-og-description').content = description;
+  document.getElementById('meta-og-url').content = canonical;
+  document.getElementById('meta-canonical').href = canonical;
+
   const target = !page && document.getElementById(location.hash.slice(1));
   if (target) target.scrollIntoView(); else scrollTo(0, 0);
 };

@@ -1,2 +1,0 @@
-# wwwentrecartones
-entrecartones.com
