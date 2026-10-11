@@ -15,7 +15,7 @@
   <title id="meta-title">Entre Cartones</title>
   <meta name="description" id="meta-description" content="Contenido semanal de Magic: The Gathering.">
   <link rel="canonical" id="meta-canonical" href="https://entrecartones.com/">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" id="meta-robots" content="index, follow">
   <link rel="icon" type="image/png" href="static/favicon.png">
 
   <!-- Vista previa al compartir en redes y en Discord -->
@@ -255,6 +255,64 @@
     </div>
   </main>
 
+  <!-- Vista Privacidad (/privacy): política de privacidad, accesible solo desde el pie de página -->
+  <main id="pp" hidden>
+    <section>
+      <div class="wrap policy">
+        <div class="section__head"><h2>Política de privacidad</h2><a class="link-more" href="/">← Volver al inicio</a></div>
+        <p class="policy__updated">Última actualización: 11 de octubre de 2026.</p>
+
+        <h3>Quiénes somos</h3>
+        <p>Entre Cartones es un canal de contenido sobre Magic: The Gathering. Puedes contactarnos a través de nuestro <a href="https://discord.com/invite/QTqvpAkYGr" target="_blank" rel="noopener">Discord</a> o cualquiera de nuestras redes sociales.</p>
+
+        <h3>Qué datos recogemos</h3>
+        <p>Esta web es una página estática: no tiene cuentas de usuario, formularios ni base de datos propia, y no guarda ningún dato personal en servidores nuestros.</p>
+        <p>Usamos <strong>Google Analytics 4</strong> para saber cuánta gente visita la web, desde dónde y qué páginas ve. Para ello, Google Analytics puede guardar cookies en tu navegador, entre otras:</p>
+        <ul>
+          <li><strong>_ga</strong> — identifica tu navegador de forma anónima. Dura 2 años.</li>
+          <li><strong>_ga_&lt;id&gt;</strong> — mantiene el estado de tu sesión mientras navegas por el sitio. Dura 2 años.</li>
+        </ul>
+        <p>Estas cookies no identifican a una persona por su nombre. Google procesa esta información según su propia <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">política de privacidad</a>. Puedes impedir que Google Analytics recoja tus datos instalando el <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">complemento de inhabilitación de Google Analytics</a>, o bloqueando las cookies de terceros en los ajustes de tu navegador.</p>
+
+        <h3>Enlaces a otros sitios</h3>
+        <p>Esta web enlaza a servicios externos que no controlamos, cada uno con su propia política de privacidad:</p>
+        <ul>
+          <li><a href="https://www.youtube.com/@cartonesentre" target="_blank" rel="noopener">YouTube</a> — también cargamos desde ahí las miniaturas y los datos de los vídeos que se muestran en esta web.</li>
+          <li><a href="https://discord.com/invite/QTqvpAkYGr" target="_blank" rel="noopener">Discord</a></li>
+          <li><a href="https://www.instagram.com/_entrecartones_/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.tiktok.com/@cartones.entre" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://x.com/entrecartones" target="_blank" rel="noopener">X</a></li>
+          <li><a href="https://moxfield.com" target="_blank" rel="noopener">Moxfield</a></li>
+          <li>Nuestra futura tienda de merchandising: cuando esté disponible, los productos de la sección Merch enlazarán a una plataforma externa de venta, sujeta a su propia política de privacidad.</li>
+        </ul>
+        <p>Al visitar cualquiera de estos enlaces, pasas a estar sujeto a la política de privacidad de ese servicio, no a esta.</p>
+
+        <h3>Tus derechos</h3>
+        <p>Como no guardamos datos personales nosotros mismos, cualquier solicitud sobre los datos que recoge Analytics debe dirigirse a Google, desde tu propia <a href="https://myaccount.google.com/data-and-privacy" target="_blank" rel="noopener">cuenta de Google</a>.</p>
+
+        <h3>Cambios en esta política</h3>
+        <p>Podemos actualizar esta página si cambia algo en cómo usamos tus datos. La fecha de la última actualización aparece arriba.</p>
+
+        <p class="policy__disclaimer">Este texto es informativo y no sustituye el asesoramiento de un profesional legal.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Vista 404: cualquier ruta que no reconocemos (p. ej. /hola) se normaliza aquí -->
+  <main id="e404" hidden>
+    <section>
+      <div class="wrap error">
+        <p class="error__code">404</p>
+        <h1>Esta página no existe</h1>
+        <p>La ruta que buscas no está aquí. Puede que el enlace esté roto o que la página se haya movido.</p>
+        <div class="cta">
+          <a class="btn btn--primary" href="/">Volver al inicio</a>
+          <a class="btn" href="/videos">Ver los vídeos</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
   <!-- Pie de página: redes y copyright -->
   <footer>
     <div class="wrap">
@@ -268,7 +326,7 @@
       </div>
       <p><span class="footer__sep" aria-hidden="true"></span><b>© 2026 Entre Cartones.</b> Todos los derechos reservados.<br><b>Magic: The Gathering</b> es marca registrada de Wizards of the Coast.
       </p>
-      <p><b><a class="footer__about" href="/about">About Us</a>  ─  <a class="footer__about" href="">Privacy Policy</a></b></p>
+      <p><b><a class="footer__about" href="/about">About Us</a>  ─  <a class="footer__about" href="/privacy">Privacy Policy</a></b></p>
     </div>
   </footer>
   <script src="script.js"></script>

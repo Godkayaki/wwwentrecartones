@@ -123,21 +123,32 @@ if (HERO_VIDEO && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   bg.play().catch(() => {});
 }
 
-// Navegación: muestra inicio, vídeos, merch o About según la ruta de la URL (rutas limpias, sin #)
+// Navegación: muestra inicio, vídeos, merch, About o Privacidad según la ruta de la URL (rutas limpias, sin #)
 const home = document.getElementById('top');
 const PAGES = {
   '/videos': { el: document.getElementById('vp'), title: 'Vídeos', description: 'Todos los vídeos de Entre Cartones: partidas, mazos y contenido semanal de Magic: The Gathering.' },
   '/merch': { el: document.getElementById('mp'), title: 'Merch', description: 'Playmats y merchandising oficial de Entre Cartones.' },
   '/about': { el: document.getElementById('ap'), title: 'About', description: 'Todos los enlaces de Entre Cartones: YouTube, Discord, Instagram, TikTok, X y Moxfield.' },
+  '/privacy': { el: document.getElementById('pp'), title: 'Política de privacidad', description: 'Cómo usamos los datos de analítica y qué enlaces externos encontrarás en Entre Cartones.' },
 };
+// Página de error: cualquier ruta que no exista (p. ej. /hola) se normaliza a /404 y muestra esta vista
+const NOT_FOUND = { el: document.getElementById('e404'), title: 'Página no encontrada', description: 'La página que buscas no existe o se ha movido.' };
+const ALL_VIEWS = [...Object.values(PAGES), NOT_FOUND];
+
 const DEFAULT_TITLE = 'Entre Cartones';
 const DEFAULT_DESCRIPTION = 'Contenido semanal de Magic: The Gathering.';
 const route = (isInitial = false) => {
-  const page = PAGES[location.pathname];
+  let page = PAGES[location.pathname];
+  const isHome = location.pathname === '/';
+  if (!page && !isHome) {
+    page = NOT_FOUND;
+    // Normaliza la URL a /404 para cualquier ruta no reconocida, sin añadir entrada al historial
+    if (location.pathname !== '/404') history.replaceState(null, '', '/404' + location.hash);
+  }
   home.hidden = !!page;
-  Object.values(PAGES).forEach((p) => { p.el.hidden = p !== page; });
+  ALL_VIEWS.forEach((p) => { p.el.hidden = p !== page; });
 
-  // SEO: título, descripción y URL canónica de la vista actual (mismo documento, sin recargar)
+  // SEO: título, descripción, URL canónica y robots de la vista actual (mismo documento, sin recargar)
   const title = page ? `${page.title} · Entre Cartones` : DEFAULT_TITLE;
   const description = page ? page.description : DEFAULT_DESCRIPTION;
   const canonical = 'https://entrecartones.com' + (page ? location.pathname : '/');
@@ -148,6 +159,7 @@ const route = (isInitial = false) => {
   document.getElementById('meta-og-description').content = description;
   document.getElementById('meta-og-url').content = canonical;
   document.getElementById('meta-canonical').href = canonical;
+  document.getElementById('meta-robots').content = page === NOT_FOUND ? 'noindex, follow' : 'index, follow';
 
   // Analítica: la primera vista ya la envía el bloque de gtag.js del <head>; aquí solo mandamos
   // las siguientes, porque al navegar entre secciones la página no se recarga.
@@ -159,7 +171,7 @@ const route = (isInitial = false) => {
   if (target) target.scrollIntoView(); else scrollTo(0, 0);
 };
 
-// Navegación: intercepta los clics en enlaces internos (/, /videos, /merch, /about)
+// Navegación: intercepta los clics en enlaces internos (/, /videos, /merch, /about, /privacy)
 // para cambiar de vista sin recargar la página, usando el historial del navegador
 document.addEventListener('click', (event) => {
   const link = event.target.closest('a[href]');
