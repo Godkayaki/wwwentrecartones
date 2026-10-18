@@ -1,43 +1,13 @@
 [
   {
-    "image": "static/mockups/bluefarm-mockup.png",
+    "image": "static/mockups/bluefarm.png",
     "name": "Blue Farm playmat",
     "price": "30,00€",
     "url": "#"
   },
   {
-    "image": "static/mockups/ecpurple-mockup.png",
+    "image": "static/mockups/ecpurple.png",
     "name": "Entre cartones 5 COLORS playmat",
-    "price": "30,00€",
-    "url": "#"
-  },
-  {
-    "image": "static/mockups/glarb-mockup.png",
-    "name": "Glarb playmat",
-    "price": "30,00€",
-    "url": "#"
-  },
-  {
-    "image": "static/mockups/naus-mockup.png",
-    "name": "Ad Nauseam playmat",
-    "price": "30,00€",
-    "url": "#"
-  },
-  {
-    "image": "static/mockups/ecjap-mockup.png",
-    "name": "Ad Nauseam 🇯🇵 playmat",
-    "price": "30,00€",
-    "url": "#"
-  },
-  {
-    "image": "static/mockups/skrull-mockup.png",
-    "name": "Super-Skrull playmat",
-    "price": "30,00€",
-    "url": "#"
-  },
-  {
-    "image": "static/mockups/sloplove-mockup.png",
-    "name": "RogIshai lovers playmat",
     "price": "30,00€",
     "url": "#"
   }
