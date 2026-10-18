@@ -92,6 +92,8 @@ const renderList = (box, videos) => box.replaceChildren(...videos.map(createCard
 const createMerchCard = ({ image, name, price, url }) => {
   const link = el('a', 'card');
   link.href = url;
+  link.target = '_blank';
+  link.rel = 'noopener';
   const thumb = el('div', 'thumb');
   const img = el('img');
   img.src = image;
