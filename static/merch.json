@@ -10,5 +10,23 @@
     "name": "Entre cartones 5 COLORS playmat",
     "price": "30,00€",
     "url": "#"
+  },
+  {
+    "image": "static/mockups/ecjapo.png",
+    "name": "Entre cartones 5 COLORS playmat",
+    "price": "30,00€",
+    "url": "#"
+  },
+  {
+    "image": "static/mockups/skrull.png",
+    "name": "Entre cartones 5 COLORS playmat",
+    "price": "30,00€",
+    "url": "#"
+  },
+  {
+    "image": "static/mockups/ecnaus.png",
+    "name": "Entre cartones 5 COLORS playmat",
+    "price": "30,00€",
+    "url": "#"
   }
 ]
